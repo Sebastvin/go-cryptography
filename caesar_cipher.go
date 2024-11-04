@@ -1,59 +1,43 @@
 package main
 import (
-	"strings"
+	"unicode"
 	"fmt"
 )
 
 
 func encrypt(plaintext string, key int) string {
-	return crypt(plaintext, key)
+	return shiftText(plaintext, key)
 }
 
 func decrypt(ciphertext string, key int) string {
-	return crypt(ciphertext, -key)
+	return shiftText(ciphertext, -key)
 }
 
-func crypt(text string, key int) string {
-	encypted_str := ""
+func shiftText(text string, key int) string {
+	encyptedText := ""
 	switched := ""
 
 	for _, char := range text {
 		switched = getOffsetChar(char, key)
-		encypted_str += switched
+		encyptedText += switched
 	}
 
-	return encypted_str
+	return encyptedText
 }
 
 func getOffsetChar(c rune, offset int) string {
-	const alphabet = "abcdefghijklmnopqrstuvwxyz"
-	alphabetLength := len(alphabet)
-	
-	i := strings.Index(alphabet, string(c))
-
-	if i == -1 {
-		return ""
+	if unicode.IsLower(c) {
+		return string(((c-'a'+rune(offset))%26+26)%26 + 'a')
+	} else if unicode.IsUpper(c) {
+		return string(((c-'A'+rune(offset))%26+26)%26 + 'A')
 	}
-	
-
-	newIndex := (i + offset) % alphabetLength
-	
-	if newIndex < 0 {
-		newIndex += alphabetLength
-	}
-
-	return string(alphabet[newIndex])
+	// Zwraca niezmieniony znak, jeśli to nie jest litera
+	return string(c)
 }
 
 func main() {
-	// Test cases
-	// 	{"abcdefghi", 1, "bcdefghij"},
-	// 	{"hello", 5, "mjqqt"},
-	// 	{"correcthorsebatterystaple", 16, "sehhusjxehiurqjjuhoijqfbu"},
-	// 	{"onetwothreefourfivesixseveneightnineten", 25, "nmdsvnsgqddentqehudrhwrdudmdhfgsmhmdsdm"},
-
-	encrypted := encrypt("abcdefghi", 1)
-	decrypted := decrypt(encrypted, 1)
-	fmt.Println(encrypted)	
-	fmt.Println(decrypted)	
+	encrypted := encrypt("AbcdefgHIJ", 3)
+	decrypted := decrypt(encrypted, 3)
+	fmt.Println("Encrypted:", encrypted)	
+	fmt.Println("Decrypted:", decrypted)	
 }
