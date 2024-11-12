@@ -1,19 +1,40 @@
 package main
+
 import (
-	"unicode"
 	"fmt"
+	"log"
+	"unicode"
 )
 
+type CaesarCipher struct{}
 
-func encrypt(plaintext string, key int) string {
-	return shiftText(plaintext, key)
+func NewCaesarCipher() *CaesarCipher {
+	return &CaesarCipher{}
 }
 
-func decrypt(ciphertext string, key int) string {
-	return shiftText(ciphertext, -key)
+func (c *CaesarCipher) Encrypt(plaintext string, key interface{}) (string, error) {
+	shift, ok := key.(int)
+
+	if !ok {
+		return "", fmt.Errorf("Caesar cipher requires an integer key, got %T", key)
+	}
+
+	return shiftText(plaintext, shift)
+
 }
 
-func shiftText(text string, key int) string {
+func (c *CaesarCipher) Decrypt(plaintext string, key interface{}) (string, error) {
+	shift, ok := key.(int)
+
+	if !ok {
+		return "", fmt.Errorf("Caesar cipher requires an integer key, got %T", key)
+	}
+
+	return shiftText(plaintext, -shift)
+
+}
+
+func shiftText(text string, key int) (string, error) {
 	encyptedText := ""
 	switched := ""
 
@@ -22,7 +43,7 @@ func shiftText(text string, key int) string {
 		encyptedText += switched
 	}
 
-	return encyptedText
+	return encyptedText, nil
 }
 
 func getOffsetChar(c rune, offset int) string {
@@ -31,13 +52,27 @@ func getOffsetChar(c rune, offset int) string {
 	} else if unicode.IsUpper(c) {
 		return string(((c-'A'+rune(offset))%26+26)%26 + 'A')
 	}
-	// Zwraca niezmieniony znak, jeśli to nie jest litera
+
 	return string(c)
 }
 
 func main() {
-	encrypted := encrypt("AbcdefgHIJ", 3)
-	decrypted := decrypt(encrypted, 3)
-	fmt.Println("Encrypted:", encrypted)	
-	fmt.Println("Decrypted:", decrypted)	
+
+	var caesarCipher = NewCaesarCipher()
+
+	plaintext := "AbcdefgHIJ"
+	key := 3
+
+	caesarEncrypted, err := caesarCipher.Encrypt(plaintext, key)
+	if err != nil {
+		log.Fatal("Caesar encryption error:", err)
+	}
+
+	caesarDecrypted, err := caesarCipher.Decrypt(caesarEncrypted, key)
+	if err != nil {
+		log.Fatal("Caesar decryption error:", err)
+	}
+
+	fmt.Printf("Encrypted: %s\n", caesarEncrypted)
+	fmt.Printf("Decrypted: %s\n", caesarDecrypted)
 }
