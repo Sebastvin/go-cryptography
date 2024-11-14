@@ -19,10 +19,15 @@ func (v *VigenereCipher) Encrypt(plaintext string, key interface{}) (string, err
 		return "", fmt.Errorf("vignere cipher requires an string key, got %T", key)
 	}
 
+	for _, char := range shift {
+		if !unicode.IsLetter(char) {
+			return "", fmt.Errorf("key must contain only letters, found: %c", char)
+		}
+	}
+
 	if len(shift) == 0 {
 		return "", fmt.Errorf("key cannot be empty")
 	}
-
 	cipherText := make([]rune, len(plaintext))
 	keyIndex := 0
 
@@ -61,6 +66,12 @@ func (v *VigenereCipher) Decrypt(ciphertext string, key interface{}) (string, er
 
 	if !ok {
 		return "", fmt.Errorf("vignere cipher requires an string key, got %T", key)
+	}
+
+	for _, char := range shift {
+		if !unicode.IsLetter(char) {
+			return "", fmt.Errorf("key must contain only letters, found: %c", char)
+		}
 	}
 
 	if len(shift) == 0 {
@@ -121,7 +132,7 @@ func generateKey(plaintext string, key string) (string, error) {
 // TODO: Move to main.go
 func main() {
 	plaintext := "hiroshimA nagAsaki"
-	key := "KEY"
+	key := "69shaS"
 
 	result, err := generateKey(plaintext, key)
 
