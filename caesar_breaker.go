@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 
@@ -106,17 +105,4 @@ func breakCipher(ciphertext string) []DecryptResult {
 	})
 
 	return results[:topN]
-}
-
-func main() {
-	ciphertext := "olssv dvysk"
-
-	results := breakCipher(ciphertext)
-
-	for i, result := range results {
-		fmt.Printf("--------------- Result  %d -----------------\n", i+1)
-		fmt.Printf("Shifts: %d\n", result.Shift)
-		fmt.Printf("Text: %s\n", result.Text)
-		fmt.Printf("Matching rate: %.2f\n", result.Score)
-	}
 }

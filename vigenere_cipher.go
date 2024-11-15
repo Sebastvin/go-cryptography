@@ -128,30 +128,3 @@ func generateKey(plaintext string, key string) (string, error) {
 
 	return key, nil
 }
-
-// TODO: Move to main.go
-func main() {
-	plaintext := "kanguaro"
-	key := "KEY"
-
-	result, err := generateKey(plaintext, key)
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(result)
-
-	var vigenereCipher = NewVigenereCipher()
-	encrypted, err := vigenereCipher.Encrypt(plaintext, result)
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(encrypted)
-	decrypted, err := vigenereCipher.Decrypt(encrypted, result)
-
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(decrypted)
-}
