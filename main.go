@@ -8,7 +8,8 @@ import (
 func main() {
 	fmt.Printf("--------------- Caesar Cipher -----------------\n\n")
 	var caesarCipher = NewCaesarCipher()
-	plaintext := "HIROSHIMA NAGASAKI"
+	plaintext := "Hello World"
+	key_str := "KEY"
 	key := 3
 
 	caesarEncrypted, err := caesarCipher.Encrypt(plaintext, key)
@@ -25,9 +26,6 @@ func main() {
 	fmt.Printf("Decrypted: %s\n", caesarDecrypted)
 
 	fmt.Printf("--------------- Vigenere Cipher -----------------\n\n")
-
-	plaintext = "kanguaro"
-	key_str := "KEY"
 
 	result, err := generateKey(plaintext, key_str)
 

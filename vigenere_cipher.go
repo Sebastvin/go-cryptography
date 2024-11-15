@@ -110,12 +110,11 @@ func (v *VigenereCipher) Decrypt(ciphertext string, key interface{}) (string, er
 }
 
 func generateKey(plaintext string, key string) (string, error) {
-	// TODO: Change variable naming
-	x := len(plaintext)
+	text_len := len(plaintext)
 	i := 0
 
 	for {
-		if x == i {
+		if text_len == i {
 			i = 0
 		}
 

@@ -3,8 +3,6 @@ package main
 import (
 	"sort"
 	"strings"
-
-	// "strings"
 	"unicode"
 )
 
@@ -19,14 +17,15 @@ type DecryptResult struct {
 	Score float64
 }
 
-// https://sjp.pwn.pl/poradnia/haslo/frekwencja-liter-w-polskich-tekstach;7072.html
-var polishFrequency = map[rune]float64{
-	'a': 8.91, 'i': 8.21, 'o': 7.75, 'e': 7.66, 'z': 5.64,
-	'n': 5.52, 'r': 4.69, 'w': 4.65, 's': 4.32, 't': 3.98,
-	'c': 3.96, 'y': 3.76, 'k': 3.51, 'd': 3.25, 'p': 3.13,
-	'm': 2.80, 'u': 2.50, 'j': 2.28, 'l': 2.10, 'b': 1.47,
-	'g': 1.42, 'h': 1.08, 'f': 0.30, 'q': 0.14, 'v': 0.04,
-	'x': 0.02,
+// https://www3.nd.edu/~busiforc/handouts/cryptography/letterfrequencies.html
+var englishFrequency = map[rune]float64{
+	'e': 11.1607, 'a': 8.4966, 'r': 7.5809, 'i': 7.5448,
+	'o': 7.1635, 't': 6.9509, 'n': 6.6544, 's': 5.7351,
+	'l': 5.4893, 'c': 4.5388, 'u': 3.6308, 'd': 3.3844,
+	'p': 3.1671, 'm': 3.0129, 'h': 3.0034, 'g': 2.4705,
+	'b': 2.0720, 'f': 1.8121, 'y': 1.7779, 'w': 1.2899,
+	'k': 1.1016, 'v': 1.0074, 'x': 0.2902, 'z': 0.2722,
+	'j': 0.1965, 'q': 0.1962,
 }
 
 func calculateFrequency(text string) map[rune]float64 {
@@ -45,7 +44,6 @@ func calculateFrequency(text string) map[rune]float64 {
 		freq[char] = (freq[char] / float64(total)) * 100
 	}
 	return freq
-
 }
 
 func calculateDifference(textFreq map[rune]float64, shift int) float64 {

@@ -15,7 +15,7 @@ func (c *CaesarCipher) Encrypt(plaintext string, key interface{}) (string, error
 	shift, ok := key.(int)
 
 	if !ok {
-		return "", fmt.Errorf("Caesar cipher requires an integer key, got %T", key)
+		return "", fmt.Errorf("caesar cipher requires an integer key, got %T", key)
 	}
 
 	return shiftText(plaintext, shift)
@@ -26,7 +26,7 @@ func (c *CaesarCipher) Decrypt(plaintext string, key interface{}) (string, error
 	shift, ok := key.(int)
 
 	if !ok {
-		return "", fmt.Errorf("Caesar cipher requires an integer key, got %T", key)
+		return "", fmt.Errorf("caesar cipher requires an integer key, got %T", key)
 	}
 
 	return shiftText(plaintext, -shift)
