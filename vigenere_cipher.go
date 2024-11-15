@@ -131,8 +131,8 @@ func generateKey(plaintext string, key string) (string, error) {
 
 // TODO: Move to main.go
 func main() {
-	plaintext := "hiroshimA nagAsaki"
-	key := "69shaS"
+	plaintext := "kanguaro"
+	key := "KEY"
 
 	result, err := generateKey(plaintext, key)
 
@@ -148,7 +148,6 @@ func main() {
 		panic(err)
 	}
 	fmt.Println(encrypted)
-
 	decrypted, err := vigenereCipher.Decrypt(encrypted, result)
 
 	if err != nil {
