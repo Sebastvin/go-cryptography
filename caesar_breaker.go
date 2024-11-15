@@ -52,7 +52,7 @@ func calculateDifference(textFreq map[rune]float64, shift int) float64 {
 	for char := 'a'; char <= 'z'; char++ {
 		shiftedChar := rune((int(char-'a')+shift)%26 + int('a'))
 		actualFreq := textFreq[char]
-		expectedFreq := polishFrequency[shiftedChar]
+		expectedFreq := englishFrequency[shiftedChar]
 		diff := actualFreq - expectedFreq
 		difference += diff * diff
 	}

@@ -45,12 +45,19 @@ func shiftText(text string, key int) (string, error) {
 	return encyptedText, nil
 }
 
-func getOffsetChar(c rune, offset int) string {
-	if unicode.IsLower(c) {
-		return string(((c-'a'+rune(offset))%26+26)%26 + 'a')
-	} else if unicode.IsUpper(c) {
-		return string(((c-'A'+rune(offset))%26+26)%26 + 'A')
+func getOffsetChar(character rune, offset int) string {
+	if !unicode.IsLetter(character) {
+		return string(character)
 	}
 
-	return string(c)
+	base := 'a'
+
+	if unicode.IsUpper(character) {
+		base = 'A'
+	}
+
+	offset = ((offset % 26) + 26) % 26
+	shifted := rune((int(character-base) + offset) % 26)
+
+	return string(shifted + base)
 }
