@@ -9,132 +9,173 @@ import (
 	"strings"
 )
 
+const (
+	menuTemplate = `
+--------------- Cryptography -----------------
+
+Choose one of action below:
+1 - Caesar Cipher
+2 - Vigenere Cipher
+3 - Caesar Breaker
+
+Choice: `
+
+	caesarHeader = `
+--------------- Caesar Cipher -----------------
+`
+	vigenereHeader = `
+--------------- Vigenere Cipher -----------------
+`
+	breakerHeader = `
+--------------- Caesar Breaker -----------------
+`
+)
+
 func main() {
 
+	reader := bufio.NewReader(os.Stdin)
+
 	for {
-		fmt.Printf("--------------- Cryptography -----------------\n\n")
-		fmt.Printf("Choose one of action below: \n")
-		fmt.Printf("1 - Caesar Cipher \n")
-		fmt.Printf("2 - Vigenere cipher \n")
-		fmt.Printf("3 - Caesar breaker \n")
+		choice, err := getMenuChoice()
 
-		var choice int
-		in := bufio.NewReader(os.Stdin)
-
-		fmt.Printf("Choice: ")
-		fmt.Scanln(&choice)
+		if err != nil {
+			log.Printf("error getting choice: %v", err)
+			continue
+		}
 
 		switch choice {
 		case 1:
-			fmt.Printf("--------------- Caesar Cipher -----------------\n\n")
-			var caesarCipher = NewCaesarCipher()
-
-			fmt.Printf("Type plaintext: ")
-			plaintext, err := in.ReadString('\n')
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			fmt.Printf("Type key: ")
-			keyStr, err := in.ReadString('\n')
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			keyStr = strings.TrimSpace(keyStr)
-			key, err := strconv.Atoi(keyStr)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			caesarEncrypted, err := caesarCipher.Encrypt(plaintext, key)
-			if err != nil {
-				log.Fatal("Caesar encryption error:", err)
-			}
-
-			caesarDecrypted, err := caesarCipher.Decrypt(caesarEncrypted, key)
-			if err != nil {
-				log.Fatal("Caesar decryption error:", err)
-			}
-
-			fmt.Printf("Encrypted: %s\n", caesarEncrypted)
-			fmt.Printf("Decrypted: %s\n", caesarDecrypted)
+			handleCaesarCipher(reader)
 		case 2:
-			fmt.Printf("--------------- Vigenere Cipher -----------------\n\n")
-
-			fmt.Printf("Type plaintext: ")
-			plaintext, err := in.ReadString('\n')
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			fmt.Printf("Type key: ")
-			keyStr, err := in.ReadString('\n')
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			keyStr = strings.TrimSpace(keyStr)
-
-			result, err := generateKey(plaintext, keyStr)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-			fmt.Printf("Generated key: %s\n", result)
-
-			var vigenereCipher = NewVigenereCipher()
-			encrypted, err := vigenereCipher.Encrypt(plaintext, result)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			fmt.Printf("Encrypted: %s\n", encrypted)
-			decrypted, err := vigenereCipher.Decrypt(encrypted, result)
-
-			if err != nil {
-				fmt.Println(err)
-			}
-			fmt.Printf("Decrypted: %s\n", decrypted)
-
+			handleVigenereCipher(reader)
 		case 3:
-			fmt.Printf("--------------- Caesar breaker -----------------\n\n")
-
-			fmt.Print("Type your text to break: ")
-			cipheredText, err := in.ReadString('\n')
-
-			if err != nil {
-				fmt.Println(err)
-			}
-
-			results := breakCipher(cipheredText)
-
-			for i, result := range results {
-				fmt.Printf("--------------- Result  %d -----------------\n", i+1)
-				fmt.Printf("Shifts: %d\n", result.Shift)
-				fmt.Printf("Text: %s\n", result.Text)
-				fmt.Printf("Matching rate: %.2f\n", result.Score)
-			}
+			handleCaesarBreaker(reader)
 		default:
 			fmt.Println("Invalid option. Please choose correct one")
-		}
-
-		fmt.Println("Continue? Y/N")
-		answer, err := in.ReadString('\n')
-		answer = strings.TrimSpace(answer)
-		answer = strings.ToUpper(answer)
-
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		switch answer {
-		case "Y", "YES":
 			continue
-		default:
+		}
+
+		if !shouldContinue(reader) {
 			return
 		}
 	}
+}
+
+func getMenuChoice() (int, error) {
+	fmt.Print(menuTemplate)
+	var choice int
+	_, err := fmt.Scanln(&choice)
+	return choice, err
+}
+
+func handleCaesarCipher(reader *bufio.Reader) {
+	fmt.Print(caesarHeader)
+	caesarCipher := NewCaesarCipher()
+
+	plaintext, err := readInput(reader, "Type plaintext: ")
+	if err != nil {
+		log.Printf("Error reading plaintext: %v", err)
+		return
+	}
+
+	keyStr, err := readInput(reader, "Type key: ")
+	if err != nil {
+		log.Printf("Error reading key: %v", err)
+		return
+	}
+
+	key, err := strconv.Atoi(strings.TrimSpace(keyStr))
+	if err != nil {
+		log.Printf("Invalid key format: %v", err)
+		return
+	}
+
+	encrypted, err := caesarCipher.Encrypt(plaintext, key)
+	if err != nil {
+		log.Printf("Caesar encryption error: %v", err)
+		return
+	}
+
+	decrypted, err := caesarCipher.Decrypt(encrypted, key)
+	if err != nil {
+		log.Printf("Caesar decryption error: %v", err)
+		return
+	}
+
+	fmt.Println("Encrypted:", encrypted)
+	fmt.Println("Decrypted:", decrypted)
+}
+
+func handleVigenereCipher(reader *bufio.Reader) {
+	fmt.Print(vigenereHeader)
+
+	plaintext, err := readInput(reader, "Type plaintext: ")
+	if err != nil {
+		log.Printf("Error reading plaintext: %v", err)
+		return
+	}
+
+	keyStr, err := readInput(reader, "Type key: ")
+	if err != nil {
+		log.Printf("Error reading key: %v", err)
+		return
+	}
+
+	key, err := generateKey(plaintext, strings.TrimSpace(keyStr))
+	if err != nil {
+		log.Printf("Error generating key: %v", err)
+		return
+	}
+
+	vigenereCipher := NewVigenereCipher()
+	encrypted, err := vigenereCipher.Encrypt(plaintext, key)
+	if err != nil {
+		log.Printf("Vigenere encryption error: %v", err)
+		return
+	}
+
+	decrypted, err := vigenereCipher.Decrypt(encrypted, key)
+	if err != nil {
+		log.Printf("Vigenere decryption error: %v", err)
+		return
+	}
+
+	// fmt.Println("Generated key:", key)
+	fmt.Println("Encrypted:", encrypted)
+	fmt.Println("Decrypted:", decrypted)
+}
+
+func handleCaesarBreaker(reader *bufio.Reader) {
+	fmt.Print(breakerHeader)
+
+	ciphertext, err := readInput(reader, "Type your text to break: ")
+	if err != nil {
+		log.Printf("Error reading ciphertext: %v", err)
+		return
+	}
+
+	results := breakCipher(ciphertext)
+	for i, result := range results {
+		fmt.Printf("--------------- Result %d -----------------\n", i+1)
+		fmt.Printf("Shifts: %d\n", result.Shift)
+		fmt.Printf("Text: %s\n", result.Text)
+		fmt.Printf("Matching rate: %.2f\n", result.Score)
+	}
+}
+
+func readInput(reader *bufio.Reader, prompt string) (string, error) {
+	fmt.Print(prompt)
+	return reader.ReadString('\n')
+}
+
+func shouldContinue(reader *bufio.Reader) bool {
+	fmt.Print("Continue? (Y/N): ")
+	answer, err := reader.ReadString('\n')
+	if err != nil {
+		log.Printf("Error reading continue choice: %v", err)
+		return false
+	}
+
+	answer = strings.ToUpper(strings.TrimSpace(answer))
+	return answer == "Y" || answer == "YES"
 }
