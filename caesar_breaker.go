@@ -99,7 +99,7 @@ func breakCipher(ciphertext string) []DecryptResult {
 
 	// Sort by probality
 	sort.Slice(results, func(i, j int) bool {
-		return results[i].Score < results[0].Score
+		return results[i].Score < results[j].Score
 	})
 
 	return results[:topN]
