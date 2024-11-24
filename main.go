@@ -154,7 +154,22 @@ func handleCaesarBreaker(reader *bufio.Reader) {
 		return
 	}
 
-	results := breakCipher(ciphertext)
+	topNStr, err := readInput(reader, "Type your topN: ")
+	if err != nil {
+		log.Printf("Error reading input: %v", err)
+		return
+	}
+
+	topNStr = strings.Replace(topNStr, "\n", "", 1)
+	topNStr = strings.TrimSpace(topNStr)
+
+	topN, err := strconv.Atoi(topNStr)
+	if err != nil {
+		log.Printf("Error converting topN to integer: %v", err)
+		return
+	}
+
+	results := breakCipher(ciphertext, topN)
 	for i, result := range results {
 		fmt.Printf("--------------- Result %d -----------------\n", i+1)
 		fmt.Printf("Shifts: %d\n", result.Shift)

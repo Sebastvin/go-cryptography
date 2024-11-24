@@ -80,8 +80,7 @@ func decrypt(text string, shift int) string {
 	return result.String()
 }
 
-func breakCipher(ciphertext string) []DecryptResult {
-	topN := 10
+func breakCipher(ciphertext string, topN int) []DecryptResult {
 
 	textFreq := calculateFrequency(ciphertext)
 	results := make([]DecryptResult, 0, 26)
