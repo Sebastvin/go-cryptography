@@ -45,7 +45,7 @@ type sdes struct {
 
 func main() {
 	if len(os.Args) < 3 {
-		log.Fatal("Usage: go main.py [-decrypt] <input> <key>")
+		log.Fatal("Usage: go run main.go [-decrypt] <input> <key>")
 	}
 
 	d, err := parseArgs(os.Args)
@@ -74,14 +74,14 @@ func parseArgs(args []string) (*sdes, error) {
 
 	if args[1] == "-decrypt" {
 		if len(args) != 4 {
-			return nil, errors.New("usage: go main.py -decrypt <input> <key>")
+			return nil, errors.New("usage: go run main.go -decrypt <input> <key>")
 		}
 		decrypt = true
 		input = args[2]
 		key = args[3]
 	} else {
 		if len(args) != 3 {
-			return nil, errors.New("usage: go main.py <input> <key>")
+			return nil, errors.New("usage: go run main.go <input> <key>")
 		}
 		input = args[1]
 		key = args[2]
