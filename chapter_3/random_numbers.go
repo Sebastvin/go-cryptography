@@ -82,9 +82,9 @@ func main() {
 // Enter the number of workers: 12
 // Estimated value of π: 3.1416122494
 // Difference: 0.0000195958
-// Aproksymacja liczby π w Twoim algorytmie nie powinna być stosowana
-// w kontekście kryptografii z powodu kilku istotnych ograniczeń matematycznych i statystycznych:
-//  - Brak deterministyczności
-//  - Zależność od generatora liczb losowych
-//  - Statystyczna natura metody Monte Carlo
-//  - Zależność od wielkości próby
+// The approximation of the number π in algorithm should not be used
+// in the context of cryptography because of several important mathematical and statistical limitations:
+// - Lack of determinism
+// - Dependence on a random number generator
+// - Statistical nature of the Monte Carlo method
+// - Dependence on sample size
